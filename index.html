@@ -214,6 +214,8 @@
     .ticket{--r:11px;position:relative;display:inline-flex;align-items:stretch;background:#bef521;color:#1f2937;transform:rotate(-2deg);
       -webkit-mask:radial-gradient(var(--r) at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(var(--r) at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat;
       mask:radial-gradient(var(--r) at 0 50%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(var(--r) at 100% 50%,#0000 98%,#000) right/51% 100% no-repeat}
+    button.ticket{appearance:none;border:0;padding:0;font:inherit;cursor:pointer;text-align:left}
+    button.ticket:hover{transform:rotate(-2deg) translateY(-2px)}
     .ticket-stub{padding:.7rem 1rem .7rem 1.5rem;border-right:2px dashed rgba(31,41,55,.45);display:grid;place-items:center;font-weight:800}
     .ticket-main{padding:.6rem 1.6rem .6rem 1.1rem;text-align:left}
     .live-dot{display:inline-block;width:9px;height:9px;border-radius:99px;background:#f00281;animation:blink 1.4s ease-in-out infinite}
@@ -273,6 +275,7 @@
     .cat[aria-pressed="true"]{background:#1f2937;color:#eeff66;border-color:#1f2937}
     /* desk dialog */
     dialog.desk{border:0;padding:0;border-radius:28px;width:min(720px,calc(100vw - 20px));max-height:calc(100dvh - 24px);background:#f7f2fb;color:#1f2937;overflow:auto;margin:auto}
+    dialog.notify{width:min(420px,calc(100vw - 20px))}
     dialog.desk::backdrop{background:rgba(31,18,60,.62);backdrop-filter:blur(3px)}
     dialog.desk[open]{animation:dlg .35s cubic-bezier(.2,.8,.2,1)}
     @keyframes dlg{from{opacity:0;transform:translateY(24px) scale(.97)}}
@@ -349,13 +352,13 @@
         <p class="rise d2 mt-1 font-semibold text-white/80">An initiative by Animals With Humanity</p>
 
         <div class="rise d3 mt-6">
-          <div class="ticket" role="status">
+          <button type="button" id="notify-open" class="ticket" aria-haspopup="dialog">
             <span class="ticket-stub"><i data-lucide="ticket" class="w-7 h-7"></i></span>
             <span class="ticket-main">
               <span class="flex items-center gap-2 text-xl font-extrabold leading-tight"><span class="live-dot" aria-hidden="true"></span>Tickets out soon</span>
-              <a href="mailto:pawse@awhbharat.org?subject=Notify%20me%20when%20Pawse%20tickets%20open" class="text-sm font-bold underline decoration-2 underline-offset-2 hover:text-paw-magenta">Email us to be told first</a>
+              <span class="text-sm font-bold underline decoration-2 underline-offset-2">Notify me</span>
             </span>
-          </div>
+          </button>
         </div>
 
         <div class="rise d4 mt-6 flex flex-wrap justify-center gap-3">
@@ -554,7 +557,7 @@
           </article>
           <article class="pop reveal rounded-3xl bg-paw-lemon p-7 flex flex-col">
             <h3 class="text-2xl font-extrabold">Volunteer with us</h3>
-            <p class="mt-3 leading-relaxed">45 days from 1 Dec to 20 Jan. Pick a skill you can bring - and volunteers receive a certificate.</p>
+            <p class="mt-3 leading-relaxed">45+ days from 2 Jan to 21 Feb. Pick a skill you can bring - and volunteers receive a certificate.</p>
             <button type="button" data-open-form="volunteer" class="mt-6 inline-flex w-fit rounded-full bg-brand-dark px-5 py-2.5 font-bold text-paw-lemon">Apply to volunteer</button>
           </article>
           <article class="pop reveal rounded-3xl bg-white border-2 border-purple-100 p-7 flex flex-col sm:col-span-2 lg:col-span-1">
@@ -596,12 +599,36 @@
 </section>
   </main>
 
+  <dialog id="notify" class="desk notify" aria-labelledby="notify-title">
+    <div class="p-5 sm:p-7">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h2 id="notify-title" class="text-2xl font-extrabold tracking-tight">Get told first</h2>
+          <p class="mt-1 text-sm text-gray-600">We'll WhatsApp you when tickets open. Used only for that.</p>
+        </div>
+        <button type="button" id="notify-close" class="shrink-0 grid h-10 w-10 place-items-center rounded-full bg-white font-extrabold hover:bg-paw-lime" aria-label="Close">✕</button>
+      </div>
+      <div class="mt-5 rounded-[24px] bg-white p-5 shadow-sm border border-purple-100">
+        <form id="form-waitlist" data-kind="Waitlist" data-form-type="waitlist" novalidate>
+          <label class="block text-sm font-semibold" for="waitlist-name">Your name
+            <input id="waitlist-name" class="paw-input mt-1" name="name" required autocomplete="name" />
+          </label>
+          <label class="block text-sm font-semibold mt-4" for="waitlist-whatsapp">WhatsApp number
+            <input id="waitlist-whatsapp" class="paw-input mt-1" name="whatsapp" type="tel" inputmode="tel" required autocomplete="tel" placeholder="10-digit mobile" pattern="(\+91[\s-]?)?[6-9][0-9]{9}" title="10-digit Indian mobile, with or without +91" />
+          </label>
+          <button class="mt-6 rounded-full bg-paw-lime px-6 py-3 font-bold text-brand-dark" type="submit">Notify me</button>
+        </form>
+        <div class="success hidden" data-success-for="form-waitlist"></div>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="desk" class="desk" aria-labelledby="desk-title">
     <div class="p-5 sm:p-8">
       <div class="flex items-start justify-between gap-4">
         <div>
           <h2 id="desk-title" class="text-3xl font-extrabold tracking-tight">The Pawse desk</h2>
-          <p class="mt-2 text-sm text-gray-600">Submissions go to the Pawse team spreadsheet (one tab per form). If sending fails, you can still email <a class="font-bold text-paw-purple" href="mailto:pawse@awhbharat.org">pawse@awhbharat.org</a>.</p>
+   
         </div>
         <button type="button" id="desk-close" class="shrink-0 grid h-10 w-10 place-items-center rounded-full bg-white font-extrabold hover:bg-paw-lime" aria-label="Close form">✕</button>
       </div>
@@ -854,7 +881,7 @@
       });
     });
 
-    const PAWSE_FORM_SUBMIT_URL ="https://script.google.com/macros/s/AKfycbzgsj_ZRloyjxstbW4-aWy_nQxDm-9FiaZ0A4GGXbmyXvl-W8y7nIdEWRrQ1Zost19g/exec";
+    const PAWSE_FORM_SUBMIT_URL ="https://script.google.com/macros/s/AKfycbyrOToxYbRCQVyywndchjMOZgi_TxxF7qvmcYNrtoYeB3ocRI4IzCFna3ustZmwwPi1/exec";
 
     function labelize(key) {
       return key.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
@@ -899,7 +926,9 @@
       const kindLabel = (data.kind || "note").toLowerCase();
       success.classList.remove("hidden");
       form.classList.add("hidden");
-      if (state === "saved") {
+      if (state === "saved" && data.formType === "waitlist") {
+        success.innerHTML = `<p class="text-2xl font-extrabold">You're on the list.</p><p class="mt-2 text-gray-600">We'll WhatsApp you when tickets open.</p>`;
+      } else if (state === "saved") {
         success.innerHTML = `<p class="text-2xl font-extrabold">Received.</p><p class="mt-2 text-gray-600">Your ${kindLabel} is saved with the Pawse team. We will get back to you soon.</p>
           <button type="button" class="mt-5 text-sm font-bold text-paw-purple" data-another>Send another</button>`;
       } else if (state === "mailto") {
@@ -1304,8 +1333,26 @@
   });
 })();
 
-    // Desk dialog
+    // Notify-me popup and desk dialog
     (() => {
+      const notify = document.getElementById("notify");
+      const notifyForm = document.getElementById("form-waitlist");
+      document.getElementById("notify-open")?.addEventListener("click", () => {
+        if (notify && !notify.open) notify.showModal();
+        document.getElementById("waitlist-name")?.focus();
+      });
+      document.getElementById("notify-close")?.addEventListener("click", () => notify.close());
+      notify?.addEventListener("click", (e) => { if (e.target === notify) notify.close(); });
+      notify?.addEventListener("close", () => {
+        const success = notify.querySelector("[data-success-for]");
+        const button = notifyForm?.querySelector("[type=submit]");
+        notifyForm?.reset();
+        notifyForm?.classList.remove("hidden");
+        success?.classList.add("hidden");
+        if (success) success.innerHTML = "";
+        if (button) button.disabled = false;
+      });
+
       const dlg = document.getElementById("desk");
       document.getElementById("desk-close")?.addEventListener("click", () => dlg.close());
       dlg?.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
